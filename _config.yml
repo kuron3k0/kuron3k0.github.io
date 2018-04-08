@@ -60,7 +60,7 @@ netease_comment: false
 ba_track_id: '50ce382a9aaf855e3bea9d1c2943f700'
 
 # Google Analytics
-ga_track_id: 'UA-49627206-1'            # Format: UA-xxxxxx-xx
+ga_track_id: 'UA-117154332-1'            # Format: UA-xxxxxx-xx
 ga_domain: kuron3k0.github.io
 
 
