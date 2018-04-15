@@ -53,30 +53,39 @@ var_dump($a == $b);
 ## 函数
 - md5()
 
-```php
-<?php
-//http://xxxx?a[]=1&b[]=2
-//md5对数组类型hash的时候会返回false
-//输出 boolean true
-$a = md5($_GET['a']);
-$b = md5($_GET['b']);
-var_dump($a == $b);
+    ```php
+    <?php
+    //http://xxxx?a[]=1&b[]=2
 
-//把md5第二个参数设置为true，会将加密后字符串当成十六进制转换成字符
-//输出 'or'6�]��!r,��b
-echo md5('ffifdyop',true);
+    //md5对数组类型hash的时候会返回false
 
-?>
-```
-- ereg()/eregi()截断<br>
+    //输出 boolean true
+
+    $a = md5($_GET['a']);
+    $b = md5($_GET['b']);
+    var_dump($a == $b);
+
+    //把md5第二个参数设置为true，会将加密后字符串当成十六进制转换成字符
+
+    //输出 'or'6�]��!r,��b
+
+    echo md5('ffifdyop',true);
+
+    ?>
+    ```
+- ereg()/eregi()截断
 
 ```php
 <?php
 
 //http://xxxx?a=abc;
+
 //输出 boolean false
+
 //http://xxxx?a=abc%00;
+
 //输出 boolean true
+
 var_dump(eregi('^[a-z]+$',$_GET[a]));
 
 ?>
@@ -88,6 +97,7 @@ var_dump(eregi('^[a-z]+$',$_GET[a]));
 <?php
 
 //pattern里使用参数e导致代码执行
+
 preg_replace('/test/e','phpinfo()','test');
 
 ?>
@@ -101,14 +111,13 @@ preg_replace('/test/e','phpinfo()','test');
 ![](/img/in-post/post-php-trick/parse_url2.png)
 *<center>三个斜杠</center>*
 
-<font color=red size=2 face="黑体">注：在path前面的"/"到达一定数量之后，parse_url会忽略参数</font>
+`注：在path前面的"/"到达一定数量之后，parse_url会忽略参数`
 
-- mt_srand()伪随机数<br>
-用`php_mt_seed`即可算出种子
-<br>
+- mt_srand()伪随机数
+用`php_mt_seed`即可算出种子<br>
 
 
-- is_numeric()十六进制绕过<br>
+- is_numeric()十六进制绕过
 
 ```php
 <?php
@@ -126,9 +135,12 @@ strcmp输入数组作为参数会返回`NULL`<br>
 <?php
 
 //http://xxxx?a[]=www
+
 $a=$_GET['a'];
 echo strcmp('aaaa',$a).'<br>';
+
 //输出 无（即NULL）
+
 if(strcmp('aaaa',$a)){
     echo 'false!';
 }else{
@@ -167,20 +179,28 @@ class test{
 
 $a = new test();
 $serial = serialize($a).'<br>'; 
+
 //O:4:"test":1:{s:1:"s";s:6:"secret";}
 
 
 unserialize($serial);
 //输出：
+
 //wakeup
+
 //destruct 
+
 //可以看到反序列化先运行了__wakeup()函数
 
 //但是如果把反序列化中参数的个数调整到比原本类的个数高的话，即可绕过wakeup
+
 //即 O:4:"test":2:{s:1:"s";s:6:"secret";}
+
 unserialize('O:4:"test":2:{s:1:"s";s:6:"secret";}');
 //输出： 
+
 //destruct secret
+
 //没有运行wakeup
 
 
