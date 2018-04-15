@@ -15,7 +15,7 @@ tags:
 > 虽然现在的题目很少会用到了，但知道多点总是没坏处的。
 
 
-## 弱类型 ##
+## 弱类型 
 
 ```php
 <?php
@@ -36,8 +36,8 @@ var_dump($a == $b);
 
 ```
 
-科学记数法
---------
+## 科学记数法
+
 
 ```php
 <?php
@@ -106,15 +106,16 @@ var_dump($a == $b);
 
 - 对parse_url()参数检测的绕过<br>
 
-![](/img/in-post/post-php-trick/parse_url1.png)
-*<center>两个斜杠</center>*
+    ![](/img/in-post/post-php-trick/parse_url1.png)
+    *<center>两个斜杠</center>*
 
-![](/img/in-post/post-php-trick/parse_url2.png)
-*<center>三个斜杠</center>*
+    ![](/img/in-post/post-php-trick/parse_url2.png)
+    *<center>三个斜杠</center>*
 
-`注：在path前面的"/"到达一定数量之后，parse_url会忽略参数`
+`   注：在path前面的"/"到达一定数量之后，parse_url会忽略参数`
 
 - mt_srand()伪随机数
+
     用`php_mt_seed`即可算出种子<br>
 
 
@@ -197,6 +198,7 @@ var_dump($a == $b);
     //但是如果把反序列化中参数的个数调整到比原本类的个数高的话，即可绕过wakeup
 
     //即 O:4:"test":2:{s:1:"s";s:6:"secret";}
+
 
     unserialize('O:4:"test":2:{s:1:"s";s:6:"secret";}');
     //输出： 
