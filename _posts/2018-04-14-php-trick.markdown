@@ -101,12 +101,31 @@ preg_replace('/test/e','phpinfo()','test');
 <br>
 
 
-- is_numeric十六进制绕过
+- is_numeric()十六进制绕过
 ```php
 <?php
 
 var_dump(is_numeric('0xabcd'));
 //输出 boolean true
+
+?>
+```
+
+- strcmp()绕过
+strcmp输入数组作为参数会返回`NULL`
+```php
+<?php
+
+//http://xxxx?a[]=www
+$a=$_GET['a'];
+echo strcmp('aaaa',$a).'<br>';
+//输出 无（即NULL）
+if(strcmp('aaaa',$a)){
+    echo 'false!';
+}else{
+    echo 'success!';
+}
+//输出 success
 
 ?>
 ```
