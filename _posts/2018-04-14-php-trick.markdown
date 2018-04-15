@@ -112,7 +112,7 @@ var_dump($a == $b);
     ![](/img/in-post/post-php-trick/parse_url2.png)
     *<center>三个斜杠</center>*
 
-`   注：在path前面的"/"到达一定数量之后，parse_url会忽略参数`
+    `注：在path前面的"/"到达一定数量之后，parse_url会忽略参数`
 
 - mt_srand()伪随机数
 
