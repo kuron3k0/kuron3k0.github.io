@@ -13,14 +13,13 @@ const CACHE_NAMESPACE = 'main-'
 
 const CACHE = CACHE_NAMESPACE + 'precache-then-runtime';
 const PRECACHE_LIST = [
-  "./",
-  "./offline.html",
+ // "./",
+ // "./offline.html",
   "./js/jquery.min.js",
   "./js/bootstrap.min.js",
   "./js/hux-blog.min.js",
   "./js/snackbar.js",
   "./img/icon_wechat.png",
-  "./img/avatar-hux.jpg",
   "./img/home-bg.jpg",
   "./img/404-bg.jpg",
   "./css/hux-blog.min.css",
