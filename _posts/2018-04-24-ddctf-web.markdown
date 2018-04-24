@@ -68,8 +68,8 @@ function signGenerate(obj,key){
 
 ……这让人头皮发麻的函数，有两种处理方法：
 
-    - 用python实现再进行注入（不可能的这辈子都不可能的，依稀记得之前做过一条调试一万多行js的题目= =）
-    - 在本地用js生成sig，用脚本访问本地页面先把sig拿到再进行注入，但是python的request又不会跑js代码，所以只能用`PhantomJS+Selenium`
+- 用python实现再进行注入（不可能的这辈子都不可能的，依稀记得之前做过一条调试一万多行js的题目= =）
+- 在本地用js生成sig，用脚本访问本地页面先把sig拿到再进行注入，但是python的request又不会跑js代码，所以只能用`PhantomJS+Selenium`
 <br>
 
 但是觉得不太可能啊，怎么可能这么麻烦，再回头看看js文件，发现如下信息：
@@ -81,7 +81,6 @@ function signGenerate(obj,key){
 还有在读数据表的时候，发现好像过滤了`database(`……，试了在`database`两边加反引号、在后面加空格、加注释，都失败了，所以只能limit一个一个读……不过根据数据库的特性我们自己的表都是跟在系统表后面，所以倒着来读即可，时间上可以接受。
 
 附脚本：
-
 ```python
 import requests
 import re
