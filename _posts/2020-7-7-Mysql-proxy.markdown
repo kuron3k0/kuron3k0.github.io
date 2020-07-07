@@ -2,11 +2,11 @@
 layout:     post
 title:      "内网Mysql代理浅析"
 subtitle:   ""
-date:       2020-7-7 14:14:00
+date:       2020-07-07 17:40:00
 author:     "kuron3k0"
-header-img: "img/post-bg-alitrip.jpg"
+header-img: "img/home-bg-geek.jpg"
 tags:
-    - RedTeam 
+    - RedTeam
 ---
 
 最近看到TX的一篇[红蓝对抗的文章](https://mp.weixin.qq.com/s/OGiDm3IHBP3_g0AOIHGCKA)，其中提到了Mssql代理，遂联想到Mysql应该也是一样的原理。于是网上一顿乱搜，不过只找到一篇[老外的博客](https://x-c3ll.github.io/posts/Pivoting-MySQL-Proxy/)，下面就来大概讲讲具体的利用。
