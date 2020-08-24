@@ -84,7 +84,7 @@ system("tar ".escapeshellcmd($_GET['cmd']));
 ```php
 <?php
 
-system("tar cf backup.gz * “);
+system("tar cf backup.gz * ");
 
 ?>
 ```
