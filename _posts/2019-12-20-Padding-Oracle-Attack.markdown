@@ -81,7 +81,7 @@ Shiro RCE的洞就是在这个攻击的基础上套上反序列化，就不再�
 
 ### 0x02 Reference
 
--   [https://blog.gdssecurity.com/labs/2015/10/26/exploiting-padding-oracle-to-gain-encryption-keys.html]()
-- [http://blog.zhaojie.me/2010/10/padding-oracle-attack-in-detail.html]()
-- [https://github.com/AonCyberLabs/PadBuster]()
+-   [https://blog.gdssecurity.com/labs/2015/10/26/exploiting-padding-oracle-to-gain-encryption-keys.html](https://blog.gdssecurity.com/labs/2015/10/26/exploiting-padding-oracle-to-gain-encryption-keys.html)
+- [http://blog.zhaojie.me/2010/10/padding-oracle-attack-in-detail.html](http://blog.zhaojie.me/2010/10/padding-oracle-attack-in-detail.html)
+- [https://github.com/AonCyberLabs/PadBuster](https://github.com/AonCyberLabs/PadBuster)
 

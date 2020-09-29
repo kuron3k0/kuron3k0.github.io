@@ -88,9 +88,9 @@ tags:
 
 ### 0x03 Reference
 
-- [https://mp.weixin.qq.com/s/OGiDm3IHBP3_g0AOIHGCKA]()
-- [https://x-c3ll.github.io/posts/Pivoting-MySQL-Proxy/]()
-- [https://github.com/blackarrowsec/mssqlproxy]()
-- [https://segmentfault.com/a/1190000020174099]()
-- [https://nets.ec/Shellcode/Socket-reuse]()
+- [https://mp.weixin.qq.com/s/OGiDm3IHBP3_g0AOIHGCKA](https://mp.weixin.qq.com/s/OGiDm3IHBP3_g0AOIHGCKA)
+- [https://x-c3ll.github.io/posts/Pivoting-MySQL-Proxy/](https://x-c3ll.github.io/posts/Pivoting-MySQL-Proxy/)
+- [https://github.com/blackarrowsec/mssqlproxy](https://github.com/blackarrowsec/mssqlproxy)
+- [https://segmentfault.com/a/1190000020174099](https://segmentfault.com/a/1190000020174099)
+- [https://nets.ec/Shellcode/Socket-reuse](https://nets.ec/Shellcode/Socket-reuse)
 
