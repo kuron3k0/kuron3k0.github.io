@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Hessian反序列化——Spring AOP链分析"
+title:      "Hessian反序列化——Spring AOP链 && JNDI绕过的调试分析"
 subtitle:   ""
 date:       2020-09-29 19:40:00
 author:     "kuron3k0"
@@ -8,6 +8,7 @@ header-img: "img/home-bg.jpg"
 tags:
     - Hessian
     - 漏洞分析
+    - JNDI
 ---
 
 看完[Orange大佬的文章](https://devco.re/blog/2020/09/12/how-I-hacked-Facebook-again-unauthenticated-RCE-on-MobileIron-MDM/)，发现知识盲区，赶紧学习一下
@@ -150,8 +151,43 @@ ldapCtx->c_lookup
 ![](/img/in-post/Hessian-RCE/cast.png)
 
 
-公开的可利用类是org.apache.naming.factory.BeanFactory，属于Tomcat的库（欲听后事如何请听下回分解）
+有一个公开的可利用类是org.apache.naming.factory.BeanFactory，属于Tomcat的库，可以通过forceString方法强制指定setter函数并进行调用。
+
+但是在准备调试的时候发现网上搜的代码都是利用rmi，没有ldap的。就感到很奇怪，于是做了一点尝试。
+
+
+根据Obj类decodeReference的代码，forceString这些属性可以通过在Ldapserver中设置javaReferenceAddress来实现
+![](/img/in-post/Hessian-RCE/stringref.png)
+
+于是改写了下marshalsec的LDAPRefServer
+![](/img/in-post/Hessian-RCE/ldapserver.png)
+
+然后。。。就没有然后了。。因为obj是Reference，但需要obj是ResourceRef的实例才能进入对应分支，右边可以看到继承关系，如果是Reference继承ResourceRef的话就没问题
+![](/img/in-post/Hessian-RCE/ref.png)
+
+无意中google翻到了大佬的[代码](https://github.com/veracode-research/rogue-jndi)，原来javaSerializedData可以这样用的
+![](/img/in-post/Hessian-RCE/serialdata.png)
+
+直接运行，果然可以orz
+![](/img/in-post/Hessian-RCE/calc.png)
+
+顺便也跟一下，当javaSerializedData存在时，进入反序列化
+![](/img/in-post/Hessian-RCE/deserializeobject.png)
+
+readObject，所以return的是ResourceRef对象，在BeanFactory的getObjectInstance函数中就可以进入对应分支
+![](/img/in-post/Hessian-RCE/readobject.png)
+
+获取我们输入的forceString属性（`x=eval`），并从beanClass（`javax.el.ELProcessor`）中获取参数为`String.class`的`eval`方法，放进forced中
+![](/img/in-post/Hessian-RCE/forcestring.png)
+
+从ResourceRef中获取我们的payload，再根据propName在刚才的forced中拿出eval方法执行，完成攻击
+![](/img/in-post/Hessian-RCE/invoke.png)
+![](/img/in-post/Hessian-RCE/calc2.png)
+
+大佬的payload中还有其他的gadget，有兴趣的师傅可以调一下。
+
 
 ## Reference
 - [https://devco.re/blog/2020/09/12/how-I-hacked-Facebook-again-unauthenticated-RCE-on-MobileIron-MDM/](https://devco.re/blog/2020/09/12/how-I-hacked-Facebook-again-unauthenticated-RCE-on-MobileIron-MDM/)
 - [https://paper.seebug.org/1131/](https://paper.seebug.org/1131/)
+- [https://github.com/veracode-research/rogue-jndi](https://github.com/veracode-research/rogue-jndi)
