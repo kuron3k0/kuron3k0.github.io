@@ -186,6 +186,7 @@ readObject，所以return的是ResourceRef对象，在BeanFactory的getObjectIns
 
 大佬的payload中还有其他的gadget，有兴趣的师傅可以调一下。
 
+调试用的代码已经放到[github](https://github.com/kuron3k0/Learn_Hessian_RCE)，大佬们需要的话可以参考一下
 
 ## Reference
 - [https://devco.re/blog/2020/09/12/how-I-hacked-Facebook-again-unauthenticated-RCE-on-MobileIron-MDM/](https://devco.re/blog/2020/09/12/how-I-hacked-Facebook-again-unauthenticated-RCE-on-MobileIron-MDM/)
