@@ -79,7 +79,7 @@ SessionInit的handle函数中，从cookie里取出了我们的PHPSESSID值，调
 然后data就是在控制器中调用`session("demo",$_GET['c']);`的时候，进入Store类的set方法，即`$this->data[$name] = $value;`
 ![](/img/in-post/thinkphp6.0.1/21.png)
 
-Arr::set的第一个参数，是传的是实参
+Arr::set的第一个参数，传的是实参
 ![](/img/in-post/thinkphp6.0.1/22.png)
 
 
