@@ -18,6 +18,7 @@ OAuth是如今一种比较流行的授权机制，虽然已经出现很久了，
 
 [阮一峰大佬的博客](http://www.ruanyifeng.com/blog/2019/04/oauth_design.html)说的挺清晰的了，这里就不细讲了，就用授权码的方式举一个OAuth实际应用的例子。
 
+
 下面是一个用到GitHub OAuth的地方：`https://sec.today`
 ![](/img/in-post/oauth-security/1.png)
 
@@ -115,6 +116,29 @@ url校验沿用了上一题的方式，然后重定向漏洞没有了。注意�
 解码得到token
 ![](/img/in-post/oauth-security/16.png)
 
+
+### 【LAB 6】SSRF via OpenID dynamic client registration
+
+题目要求：拿到AWS的`SecretAccessKey`
+
+根据题目提示，访问`/.well-known/openid-configuration`（类似的url还有`/.well-known/oauth-authorization-server`和`/.well-known/jwks.json`），得到客户端动态注册的链接
+![](/img/in-post/oauth-security/17.png)
+
+翻了下一些有SSRF可能的url参数，`redirect_uri`是本地触发的；`jwks_uri`是服务端取秘钥的，应该不存在返回信息给我们的情况；剩下的`logo_uri`最有可能
+![](/img/in-post/oauth-security/18.png)
+
+注册完后进行Openid登录，看到果然有一个图片，而且明显内容不是本地请求的
+![](/img/in-post/oauth-security/19.png)
+
+得到`SecretAccessKey`
+![](/img/in-post/oauth-security/20.png)
+
+题目还提到Openid请求中，有的`provider`是可以让`client`提供一个`request_uri`自己去取参数的（`request_uri_parameter_supported`是`true`），如果没做校验的话，也是会导致SSRF
+![](/img/in-post/oauth-security/21.png)
+
+形式如下
+![](/img/in-post/oauth-security/22.png)
+
 ## 防御
 OAuth服务提供者需要让第三方应用提供url的白名单、用`state`等参数防止类CSRF攻击、确认最后请求的`scope`是跟最开始的请求是一致的
 
@@ -127,3 +151,4 @@ OAuth服务提供者需要让第三方应用提供url的白名单、用`state`�
 - [https://www.ietf.org/id/draft-ietf-oauth-security-topics-16.html](https://www.ietf.org/id/draft-ietf-oauth-security-topics-16.html)
 - [https://portswigger.net/web-security/oauth](https://portswigger.net/web-security/oauth)
 - [http://www.ruanyifeng.com/blog/2019/04/oauth_design.html](http://www.ruanyifeng.com/blog/2019/04/oauth_design.html)
+- [https://portswigger.net/web-security/oauth/openid](https://portswigger.net/web-security/oauth/openid)
