@@ -53,21 +53,21 @@ public class User {
 
 - @JsonCreator
 
-  > We can use the @JsonCreator annotation to tune the constructor/factory used in deserialization.
+    > We can use the @JsonCreator annotation to tune the constructor/factory used in deserialization.
   
-  可以加在构造函数上面用于反序列化
+    可以加在构造函数上面用于反序列化
 
 -  @JsonProperty
 
-  > We can add **the *@JsonProperty* annotation to indicate the property name in JSON**.
+    > We can add **the *@JsonProperty* annotation to indicate the property name in JSON**.
 
-  指定Json里的key对应的属性
+    指定Json里的key对应的属性
 
 - @JacksonInject
 
-  > **@JacksonInject indicates that a property will get its value from the injection and not from the JSON data.**
+    > **@JacksonInject indicates that a property will get its value from the injection and not from the JSON data.**
 
-  指定对应属性不能从Json中获取
+    指定对应属性不能从Json中获取
 
 所以按照描述，上述User类中的`isAdmin`属性是用户不可控的
 
