@@ -1,3 +1,16 @@
+---
+layout:     post
+title:      "JSP绕过方式学习"
+subtitle:   ""
+date:       2021-04-15 13:14:20
+author:     "kuron3k0"
+header-img: "img/post-bg-rwd.jpg"
+tags:
+    - Java
+---
+
+
+
 来学一下`threedr3am`大佬的[jsp-webshell](https://github.com/threedr3am/JSP-Webshells)中用到的绕过技术（其中涉及到的类都是jdk中自带的）
 
 

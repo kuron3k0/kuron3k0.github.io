@@ -1,3 +1,16 @@
+---
+layout:     post
+title:      "Weblogic 内存马（二）"
+subtitle:   ""
+date:       2021-04-29 13:14:20
+author:     "kuron3k0"
+header-img: "img/post-bg-rwd.jpg"
+tags:
+    - Java
+---
+
+
+
 之前已经实现了Filter内存马，现在继续把其他类型的也看一下
 
 

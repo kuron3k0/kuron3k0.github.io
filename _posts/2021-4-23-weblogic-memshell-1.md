@@ -1,3 +1,16 @@
+---
+layout:     post
+title:      "Weblogic 内存马（一）"
+subtitle:   ""
+date:       2021-04-23 13:14:20
+author:     "kuron3k0"
+header-img: "img/post-bg-rwd.jpg"
+tags:
+    - Java
+---
+
+
+
 ## 0x00 内存马简介
 
 自从护网以来，以前常规的有文件落地的webshell很容易就被查杀，于是慢慢的就出现了各大中间件的内存马，因为其驻存在内存中，没有文件落地，因此也会更加隐蔽
