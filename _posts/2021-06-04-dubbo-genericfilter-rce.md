@@ -111,6 +111,7 @@ if (ProtocolUtils.isJavaGenericSerialization(generic)) {
 |96 ~ 127|	消息体长度|	运行时计算|
 
 这个跟我们的报文没什么关系，按抓包默认的设置就好，长度按照最终body算即可，可以跟抓到的包对应上
+
 |字节  |	含义|
 |:----|:----|
 |\xda\xbb   	|						魔数 |
