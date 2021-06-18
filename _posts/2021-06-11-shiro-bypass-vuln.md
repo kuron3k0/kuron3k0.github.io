@@ -219,6 +219,8 @@ public static String getPathWithinApplication(HttpServletRequest request) {
 很明显看到分割出来的两个数组长度是不一样的，从而完成绕过
 ![](/img/in-post/shiro-bypass-vuln/23.png)
 
+而spring不会把空格去掉，匹配上正确的控制器
+![](/img/in-post/shiro-bypass-vuln/24.png)
 
 ## 参考
 - [https://segmentfault.com/a/1190000019440231](https://segmentfault.com/a/1190000019440231)
