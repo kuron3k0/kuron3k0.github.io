@@ -201,7 +201,23 @@ public static String getPathWithinApplication(HttpServletRequest request) {
 ![](/img/in-post/shiro-bypass-vuln/18.png)
 
 
-未完待续
+## CVE-2020-17523(ver < 1.7.1)
+### 漏洞分析
+
+正常访问，跳转到登录页面
+![](/img/in-post/shiro-bypass-vuln/20.png)
+
+换成`%20`成功绕过
+![](/img/in-post/shiro-bypass-vuln/19.png)
+
+来看一下shiro是怎么解析url的，先解码成`/user/ `
+![](/img/in-post/shiro-bypass-vuln/21.png)
+
+然后会分别对shiro的pattern和url用斜杠进行分割，但是shiro分割逻辑存在问题，对`/user/ `分割的时候，分成了`user`和空格，并会对其进行trim操作，所以我们的空格就被过滤掉了，然后因为`token.length() <= 0`的值为true，这个空格就没有被加到数组中
+![](/img/in-post/shiro-bypass-vuln/22.png)
+
+很明显看到分割出来的两个数组长度是不一样的，从而完成绕过
+![](/img/in-post/shiro-bypass-vuln/23.png)
 
 
 ## 参考
