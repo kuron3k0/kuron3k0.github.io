@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Shiro历史漏洞学习"
+title:      "Shiro权限绕过历史漏洞学习"
 subtitle:   ""
 date:       2021-06-11 20:13:14
 author:     "kuron3k0"
@@ -9,7 +9,6 @@ tags:
     - Java
 ---
 
-[TOC]
 
 
 ## 0x00 Shiro简介

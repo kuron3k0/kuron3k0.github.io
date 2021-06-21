@@ -1,1 +1,2 @@
 [0612/201225:ERROR:browser_gpu_channel_host_factory.cc(119)] Failed to launch GPU process.
+[0617/190553:WARNING:url_request_job_manager.cc(89)] Failed to map: weixin://resourceid/blank
