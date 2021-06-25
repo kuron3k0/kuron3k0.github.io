@@ -119,7 +119,9 @@ cookie名在初始化的时候指定为`rememberMe`
 两个`123`都解出来了，之前还是脑子抽筋了，第二个iv是什么都不影响解密，因为最后一块的解密是用第二块iv来做异或的，中间的乱码就是把iv当做密文解密，然后中间值与`123\r\r\r\r\r\r\r\r\r\r\r\r\r`异或得出的结果，对解密没有影响
 ![](/img/in-post/shiro-deserialize/14.png)
 
-因此只需要按照正常padding oracle进行即可，只是多了一个前缀，这里参考了[inspiringz大佬的脚本](https://github.com/inspiringz/Shiro-721/blob/master/exp2_%E6%89%8B%E5%B7%A5%E5%AE%9E%E7%8E%B0/shiro_oracle_padding.py)，我在这个基础上检查了上面提到的问题，具体代码看[这里](https://github.com/kuron3k0/shiro_padding_oracle/blob/main/shiro_oracle_padding.py#L50)
+因此只需要按照正常padding oracle进行即可，只是多了一个前缀。另外，因为我们把一段随机字符插到了后面，所以解密出来的序列化字节码后面时候有其他东西的，不过实际上readObject会准确读取到我们插入字符的前面，因此不会有影响
+
+这里参考了[inspiringz大佬的脚本](https://github.com/inspiringz/Shiro-721/blob/master/exp2_%E6%89%8B%E5%B7%A5%E5%AE%9E%E7%8E%B0/shiro_oracle_padding.py)，我在这个基础上检查了上面提到的问题，具体代码看[这里](https://github.com/kuron3k0/shiro_padding_oracle/blob/main/shiro_oracle_padding.py#L50)
 ![](/img/in-post/shiro-deserialize/17.png)
 
 
