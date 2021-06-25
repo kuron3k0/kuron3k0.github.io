@@ -132,4 +132,4 @@ burp发包，反序列化成功
 ## 参考
 - [https://github.com/apache/shiro/compare/shiro-root-1.2.4%E2%80%A6shiro-root-1.2.5](https://github.com/apache/shiro/compare/shiro-root-1.2.4%E2%80%A6shiro-root-1.2.5)
 - [https://github.com/apache/shiro/commit/a8018783373ff5e5210225069c9919e071597d5e](https://github.com/apache/shiro/commit/a8018783373ff5e5210225069c9919e071597d5e)
-- [https://github.com/inspiringz/Shiro-721/blob/master/exp2_%E6%89%8B%E5%B7%A5%E5%AE%9E%E7%8E%B0/shiro_oracle_padding.py](https://github.com/inspiringz/Shiro-721/blob/master/exp2_%E6%89%8B%E5%B7%A5%E5%AE%9E%E7%8E%B0/shiro_oracle_padding.py)
+- [https://github.com/inspiringz/Shiro-721](https://github.com/inspiringz/Shiro-721)
